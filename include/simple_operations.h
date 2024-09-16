@@ -109,31 +109,6 @@ static inline t_vec4d	lag_vec4d_negate_ret(const t_vec4d in)
 		.simd = _mm256_sub_pd(_mm256_set1_pd(0.0), in.simd)
 	});
 }
-//// DEPRECATED
-// @brief Calculates the magnitude of a vector and stores the result
-//        in the variable pointed-to by `out`.
-// @param in Vector to calculate the magnitude of
-// @param out Pointer to the variable that stores the result.
-//static inline void	lag_vec4d_magnitude(double *out, const t_vec4d in)
-//{
-//	__m128d sum;
-//	const __m256d squared = _mm256_mul_pd(in.simd, in.simd);
-//	// this step is required because _mm_hadd_pd only works on 128-bit values,
-//	// and there isn't a "full"-suite of intrinsic functions for 256-bit values
-//	const __m128d low_part = _mm256_castpd256_pd128(squared);
-//	const __m128d high_part = _mm256_extractf128_pd(squared, 1);
-
-//	sum = _mm_add_pd(low_part, high_part);
-//	sum = _mm_hadd_pd(sum, sum);
-//	*out = sqrt(_mm_cvtsd_f64(sum));
-//}
-//// DEPRECATED
-
-// @brief Calculates the dot product of two vectors and stores the result
-//        in the variable pointed-to by `out`.
-// @param in1 Vector to calculate the dot product of
-// @param in2 Vector to calculate the dot product of
-// @param out Pointer to the variable that stores the result.
 
 typedef __attribute((aligned(32))) double	t_vec4d4[4];
 
