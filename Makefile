@@ -12,38 +12,38 @@ CFLAGS := -Wall -Wextra -Werror -mavx -mavx2
 
 # Include
 INC_DIR := include
-INC := ltypes.h lavx.h lag.h init.h simple_operations.h
+INC := ltypes.h lag.h init.h simple_operations.h \
+       simple_operations_1.h simple_operations_2.h \
+       simple_operations_3.h simple_operations_4.h \
+       vec4_linear_algebra.h lavx.h 
 
 INCLUDE := $(addprefix $(INC_DIR)/, $(INC))
 
 # Src
-SRC_DIR := srcs
+SRC_DIR := src
 SRC := mat4.c
 
 SRCS := $(addprefix $(SRC_DIR)/, $(SRC))
 
 # Obj
-OBJ_DIR := objs
-
+OBJ_DIR := obj
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
-.PHONY: all clean fclean re objs check
+CFLAGS += -I$(INC_DIR)
 
-all: check $(NAME)
+.PHONY: all clean fclean re objs
 
-$(NAME): $(OBJS)
+all: $(NAME)
+
+$(NAME): | objs $(OBJS)
 	@ar -rcs $@ $(OBJS)
 	@printf "\n$(GREEN)Compiled LagAMat!$(DFLT)\n"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INCLUDE)
-	@$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-check:
-	@if [ ! -d $(OBJ_DIR) ] || [ $$(find $(INCLUDE) -newer $(NAME)) ]; then \
-		mkdir -p $(OBJ_DIR); \
-	else \
-		printf "LagAMat: Nothing to be done for \`all'\n"; \
-	fi
+objs:
+	@mkdir -p $(OBJ_DIR)
 
 clean:
 	@rm -rf $(OBJ_DIR)

@@ -6,12 +6,13 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 21:51:29 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/16 12:30:58 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:28:08 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lavx.h"
 
+// Nobody likes loops.
 static inline void	unrolled_cross(const t_mat4d *in, const __m256d col[4],
 						t_mat4d *out)
 {
