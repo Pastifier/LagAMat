@@ -14,8 +14,8 @@
 # define SIMPLE_OPERATIONS_H
 
 # include "ltypes.h"
-# include <math.h>
-# include <string.h>
+# include <math.h> // for sqrt()
+# include <string.h> // for memcpy()
 
 /// @brief Performs component-wise (vector) addition and stores the result
 ///        in the vector pointed-to by `out`.
