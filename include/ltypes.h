@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 20:13:25 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/16 12:49:42 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:27:37 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 # define LTYPES_H
 
 # include <immintrin.h> // For AVX intrinsics (__m256d, __m* types in general)
+# include <stdint.h> // For bit-wise magic
+
+# define EPSILON __DBL_EPSILON__
 
 /*--- VECTOR ---*/
 
 typedef union u_vec4d
 {
-	double	a[4];
-	__m256d	simd;
+	double		a[4];
+	__m256d		simd;
+	uint64_t	raw[4];
 	struct
 	{
 		double	x;
@@ -39,6 +43,7 @@ typedef union u_vec3d
 		double	x;
 		double	y;
 		double	z;
+		double	ignore;
 	};
 }__attribute((aligned(32)))	t_vec3d;
 

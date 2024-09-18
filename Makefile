@@ -31,6 +31,8 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 CFLAGS += -I$(INC_DIR)
 
+HEADER_DEPENDING := $(addprefix -I, $(INCLUDE))
+
 .PHONY: all clean fclean re objs
 
 all: $(NAME)
@@ -40,7 +42,7 @@ $(NAME): | objs $(OBJS)
 	@printf "\n$(GREEN)Compiled LagAMat!$(DFLT)\n"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(HEADER_DEPENDING) -c $< -o $@
 
 objs:
 	@mkdir -p $(OBJ_DIR)

@@ -6,11 +6,12 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 05:13:18 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/16 10:22:03 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/18 00:19:42 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "LagATest.hpp"
+#include <random>
 
 void LagATest::test_vec4d_init() {
 	PRINT_LINE("Testing vec4dp_init(), vec4dv_init().");
@@ -375,6 +376,52 @@ void	LagATest::test_vec4d_cross() {
 	Vec4 vecZeroResult(zeroResult);
 
 	assertEqual(vecZeroExpected, vecZeroResult);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4d_eq() {
+	PRINT_LINE("Testing vec4d_eq().");
+	const t_vec4d v1 = lag_vec4d_ret(0, 0, 0, 0);
+	const t_vec4d v2 = lag_vec4d_ret(0, 0, 0, 0);
+	Vec4 vectors1[20];
+	Vec4 vectors2[20];
+
+	for (int i = 0; i < 20; i++) {
+		vectors1[i].setVector(
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__)
+		);
+		vectors2[i] = vectors1[i];
+		assertEqual(
+			true,
+			lag_vec4d_eq(
+				vectors1[i].getVector(),
+				vectors2[i].getVector(),
+				EPSILON)
+		);
+	}
+
+	for (int i = 0; i < 20; i++) {
+		vectors1[i].setVector(
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__)
+		);
+		vectors2[i] = vectors1[i];
+		vectors2[i].invertBits();
+		assertEqual(
+			false,
+			lag_vec4d_eq(
+				vectors1[i].getVector(),
+				vectors2[i].getVector(),
+				EPSILON)
+		);
+	}
 
 	routineCheck();
 	PRINT_LINE("");
