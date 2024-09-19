@@ -12,10 +12,8 @@ CFLAGS := -Wall -Wextra -Werror -mavx -mavx2
 
 # Include
 INC_DIR := include
-INC := ltypes.h lag.h init.h simple_operations.h \
-       simple_operations_1.h simple_operations_2.h \
-       simple_operations_3.h simple_operations_4.h \
-       vec4_linear_algebra.h lavx.h 
+INC :=	ltypes.h lag.h \
+		lavx.h
 
 INCLUDE := $(addprefix $(INC_DIR)/, $(INC))
 
