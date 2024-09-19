@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 03:29:08 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/18 00:38:31 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/19 06:02:29 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,48 @@ PRINT_LINE(""); \
 
 
 #include <cmath>
+
+class Vec4s
+{
+public:
+	Vec4s() : _internal((t_vec4s){0.0, 0.0, 0.0, 0.0}) {};
+	Vec4s(const t_vec4s init) : _internal(init) {};
+	Vec4s(const Vec4s& other) : _internal(other.getVector()) {};
+
+	const t_vec4s getVector() const {
+		return _internal;
+	}
+
+	void setVector(double x, double y, double z, double w) {
+		_internal.simd = _mm_set_ps(w, z, y, x);
+	}
+
+	void invertBits() {
+		_internal.simd = _mm_andnot_ps(_internal.simd, _internal.simd);
+	}
+
+	bool operator==(const Vec4s& other) const {
+		// Need to use EPSILON
+		const t_vec4s otherVec = other.getVector();
+		return std::abs(_internal.x - otherVec.x) < EPSILON &&
+			std::abs(_internal.y - otherVec.y) < EPSILON &&
+			std::abs(_internal.z - otherVec.z) < EPSILON &&
+			std::abs(_internal.w - otherVec.w) < EPSILON;
+	}
+
+	bool operator!=(const Vec4s& other) const {
+		return !(*this == other);
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Vec4s& vec) {
+		const t_vec4s v = vec.getVector();
+		os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+		return os;
+	}
+
+private:
+	t_vec4s _internal;
+};
 
 class Vec4
 {
@@ -149,6 +191,17 @@ public:
 	void test_vec4d_cross();
 	void test_vec4d_eq();
 
+	void test_vec4s_init();
+	void test_vec4s_add();
+	void test_vec4s_sub();
+	void test_vec4s_scaleby();
+	void test_vec4s_negation();
+	void test_vec4s_dot();
+	void test_vec4s_mag();
+	void test_vec4s_normalize();
+	void test_vec4s_cross();
+	void test_vec4s_eq();
+
 	void runVec4dTests() {
 		test_vec4d_init();
 		test_vec4d_add();
@@ -160,6 +213,20 @@ public:
 		test_vec4d_normalize();
 		test_vec4d_cross();
 		test_vec4d_eq();
+		test_vec4s_scaleby();
+	}
+
+	void runVec4sTests() {
+		test_vec4s_init();
+		test_vec4s_add();
+		test_vec4s_sub();
+		test_vec4s_scaleby();
+		test_vec4s_negation();
+		test_vec4s_dot();
+		test_vec4s_mag();
+		test_vec4s_normalize();
+		test_vec4s_cross();
+		test_vec4s_eq();
 	}
 
 private:

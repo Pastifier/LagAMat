@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 04:55:47 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/16 11:46:30 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/18 23:21:57 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@ static inline void	lag_vec4d_add(t_vec4d *out, const t_vec4d in1,
 }
 
 /// @brief Performs component-wise (vector) addition.
-///        This is to be used when performance is not a concern
-///        (i.e. modern compilers, single-usage, etc...),
-///        or when function-chaining is desired.
 static inline t_vec4d	lag_vec4d_add_ret(const t_vec4d in1, const t_vec4d in2)
 {
 	return ((t_vec4d)
@@ -48,9 +45,6 @@ static inline void	lag_vec4d_sub(t_vec4d *out, const t_vec4d in1,
 }
 
 /// @brief Performs component-wise (vector) subtraction.
-///        This is to be used when performance is not a concern
-///        (i.e. modern compilers, single-usage, etc...),
-///        or when function-chaining is desired.
 static inline t_vec4d	lag_vec4d_sub_ret(const t_vec4d in1, const t_vec4d in2)
 {
 	return ((t_vec4d)

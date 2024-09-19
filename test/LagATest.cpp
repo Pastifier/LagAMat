@@ -6,12 +6,14 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 05:13:18 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/18 00:19:42 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/19 06:19:00 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "LagATest.hpp"
 #include <random>
+
+/*--- Vec4d ---*/
 
 void LagATest::test_vec4d_init() {
 	PRINT_LINE("Testing vec4dp_init(), vec4dv_init().");
@@ -422,6 +424,422 @@ void	LagATest::test_vec4d_eq() {
 				EPSILON)
 		);
 	}
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+/*---- Vec4s ----*/
+
+void	LagATest::test_vec4s_init() {
+	PRINT_LINE("Testing vec4sp_init(), vec4sv_init().");
+	const t_vec4s v1 = {4.3, -4.2, 3.1, 1.0};
+	t_vec4s v2;
+	const t_vec4s v3 = {4.3, -4.2, 3.1, 0.0};
+	t_vec4s v4;
+
+	lag_vec4sp_init(&v2, v1.x, v1.y, v1.z);
+	lag_vec4sv_init(&v4, v3.x, v3.y, v3.z);
+
+	Vec4s vec1(v1);
+	Vec4s vec2(v2);
+	Vec4s vec3(v3);
+	Vec4s vec4th(v4); // oops LOL
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec3, vec4th);
+
+	// Edge cases
+	const t_vec4s zeroVec = {0.0, 0.0, 0.0, 0.0};
+	t_vec4s zeroResult;
+	lag_vec4sv_init(&zeroResult, 0.0, 0.0, 0.0);
+	Vec4s vecZero(zeroVec);
+	Vec4s vecZeroResult(zeroResult);
+	assertEqual(vecZero, vecZeroResult);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void LagATest::test_vec4s_add() {
+	PRINT_LINE("Testing vec4s_add(), vec4s_add_ret().");
+	const t_vec4s p1 = lag_vec4sp_ret(3, -2, 5);
+	const t_vec4s v1 = lag_vec4sv_ret(-2, 3, 1);
+	const t_vec4s expected = lag_vec4sp_ret(1, 1, 6);
+
+	t_vec4s res = lag_vec4s_add_ret(p1, v1);
+	t_vec4s res2;
+	lag_vec4s_add(&res2, p1, v1);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(res);
+	Vec4s vec3(res2);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+
+	// Edge cases
+	const t_vec4s zeroVec = {0.0, 0.0, 0.0, 0.0};
+	const t_vec4s addResult = lag_vec4s_add_ret(zeroVec, zeroVec);
+	const t_vec4s addExpected = zeroVec;
+	Vec4s vecAddExpected(addExpected);
+	Vec4s vecAddResult(addResult);
+	assertEqual(vecAddExpected, vecAddResult);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void LagATest::test_vec4s_sub() {
+	PRINT_LINE("Testing vec4s_sub(), vec4s_sub_ret().");
+	const t_vec4s zeroVec = {0.0, 0.0, 0.0, 0.0};
+	const t_vec4s p1 = lag_vec4sp_ret(3, -2, 5);
+	const t_vec4s v1 = lag_vec4sv_ret(-2, 3, 1);
+	const t_vec4s expected = lag_vec4sp_ret(5, -5, 4);
+
+	t_vec4s res = lag_vec4s_sub_ret(p1, v1);
+	t_vec4s res2;
+	lag_vec4s_sub(&res2, p1, v1);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(res);
+	Vec4s vec3(res2);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+
+	// Edge cases
+	const t_vec4s subResult = lag_vec4s_sub_ret(zeroVec, zeroVec);
+	const t_vec4s subExpected = zeroVec;
+	Vec4s vecSubExpected(subExpected);
+	Vec4s vecSubResult(subResult);
+	assertEqual(vecSubExpected, vecSubResult);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void LagATest::test_vec4s_scaleby() {
+	PRINT_LINE("Testing vec4s_scaleby(), vec4s_scaleby_ret().");
+	const t_vec4s a = lag_vec4s_ret(1, -2, 3, -4);
+	const float scalar = 3.5;
+	const t_vec4s expected = lag_vec4s_ret(3.5, -7.0, 10.5, -14.0);
+
+	t_vec4s res = lag_vec4s_scaleby_ret(a, scalar);
+	t_vec4s res2;
+	lag_vec4s_scaleby(&res2, a, scalar);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(res);
+	Vec4s vec3(res2);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+
+	// Division
+	const float scalar2 = 2.0;
+	const t_vec4s expected2 = lag_vec4s_ret(0.5, -1.0, 1.5, -2.0);
+	t_vec4s res3 = lag_vec4s_scaleby_ret(a, 1.0 / scalar2);
+	t_vec4s res4;
+	lag_vec4s_scaleby(&res4, a, 1.0 / scalar2);
+
+	Vec4s vec4(expected2);
+	Vec4s vec5(res3);
+	Vec4s vec6(res4);
+
+	assertEqual(vec4, vec5);
+	assertEqual(vec4, vec6);
+
+	// Edge cases
+	const float zeroScalar = 0.0;
+	const t_vec4s scaledByZero = lag_vec4s_scaleby_ret(a, zeroScalar);
+	const t_vec4s expectedZero = lag_vec4s_ret(0.0, 0.0, 0.0, 0.0);
+	Vec4s vecScaleZero(expectedZero);
+	Vec4s vecScaledZero(scaledByZero);
+	assertEqual(vecScaleZero, vecScaledZero);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void LagATest::test_vec4s_negation() {
+	PRINT_LINE("Testing vec4s_negate_new(), vec4s_negate_ret(), vec4s_negate().");
+	const t_vec4s v1 = lag_vec4sv_ret(1, -2, 3);
+	const t_vec4s expected = lag_vec4sv_ret(-1, 2, -3);
+	t_vec4s v2 = v1;
+	t_vec4s v3;
+	t_vec4s v4 = lag_vec4s_negate_ret(v1);
+
+	lag_vec4s_negate_new(&v3, v1);
+	lag_vec4s_negate(&v2);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(v2);
+	Vec4s vec3(v3);
+	Vec4s vec4(v4);
+
+	const t_vec4s a = lag_vec4s_ret(1, -2, 3, -4);
+	const t_vec4s expected2 = lag_vec4s_ret(-1, 2, -3, 4);
+	t_vec4s res = lag_vec4s_negate_ret(a);
+	t_vec4s res2 = a;
+	t_vec4s res3;
+	lag_vec4s_negate(&res2);
+	lag_vec4s_negate_new(&res3, a);
+
+	Vec4s vec5(expected2);
+	Vec4s vec6(res);
+	Vec4s vec7(res2);
+	Vec4s vec8(res3);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+	assertEqual(vec1, vec4);
+	assertEqual(vec5, vec6);
+	assertEqual(vec5, vec7);
+	assertEqual(vec5, vec8);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4s_dot() {
+	PRINT_LINE("Testing vec4s_dot(), vec4s_dot_ret().");
+
+	const t_vec4s v1 = lag_vec4sv_ret(1, 2, 3);
+	const t_vec4s v2 = lag_vec4sv_ret(2, 3, 4);
+	const float expected = 20.0;
+
+	float result;
+	lag_vec4s_dot(&result, v1, v2);
+	
+	const float result2 = lag_vec4s_dot_ret(v1, v2);
+	
+	assertEqual(expected, result);
+	assertEqual(expected, result2);
+
+	const t_vec4s v3 = lag_vec4sv_ret(0, 0, 0);
+	const float expected2 = 0.0;
+
+	float result3;
+	lag_vec4s_dot(&result3, v1, v3);
+
+	const float result4 = lag_vec4s_dot_ret(v1, v3);
+	
+	assertEqual(expected2, result3);
+	assertEqual(expected2, result4);
+
+	const t_vec4s v4 = lag_vec4sv_ret(1, 0, 0);
+	const t_vec4s v5 = lag_vec4sv_ret(0, 1, 0);
+	const float expected3 = 0.0;
+
+	float result5;
+	lag_vec4s_dot(&result5, v4, v5);
+
+	const float result6 = lag_vec4s_dot_ret(v4, v5);
+
+	assertEqual(expected3, result5);
+	assertEqual(expected3, result6);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4s_mag() {
+	PRINT_LINE("Testing vec4s_magnitude(), vec4s_magnitude_ret().");
+
+	// Normalized vectors
+	const t_vec4s v1 = lag_vec4sv_ret(0, 1, 0);
+	const float expected = 1.0;
+	const float result = lag_vec4s_magnitude_ret(v1);
+	float result2;
+	lag_vec4s_magnitude(&result2, v1);
+
+	assertEqual(expected, result);
+	assertEqual(expected, result2);
+
+	const t_vec4s v2 = lag_vec4sv_ret(0, 0, 1);
+	const float result3 = lag_vec4s_magnitude_ret(v2);
+	float result4;
+	lag_vec4s_magnitude(&result4, v2);
+
+	assertEqual(expected, result3);
+	assertEqual(expected, result4);
+
+	const t_vec4s v3 = lag_vec4sv_ret(1, 0, 0);
+	const float result5 = lag_vec4s_magnitude_ret(v3);
+	float result6;
+	lag_vec4s_magnitude(&result6, v3);
+
+	assertEqual(expected, result5);
+	assertEqual(expected, result6);
+
+	// Non-normalized vectors
+	const t_vec4s v4 = lag_vec4sv_ret(1, 1, 1);
+	const float expected2 = sqrtf(3);
+	const float result7 = lag_vec4s_magnitude_ret(v4);
+	float result8;
+	lag_vec4s_magnitude(&result8, v4);
+
+	assertEqual(expected2, result7);
+	assertEqual(expected2, result8);
+	
+	const t_vec4s v5 = lag_vec4sv_ret(1, 2, 3);
+	const float expected3 = sqrtf(14);
+	const float result9 = lag_vec4s_magnitude_ret(v5);
+	float result10;
+	lag_vec4s_magnitude(&result10, v5);
+
+	assertEqual(expected3, result9);
+	assertEqual(expected3, result10);
+
+	// Edge cases
+	const t_vec4s zeroVec = lag_vec4sv_ret(0, 0, 0);
+	const float zeroResult = lag_vec4s_magnitude_ret(zeroVec);
+	float zeroResult2;
+	lag_vec4s_magnitude(&zeroResult2, zeroVec);
+
+	assertEqual(0.0f, zeroResult);
+	assertEqual(0.0f, zeroResult2);
+	
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4s_cross() {
+	PRINT_LINE("Testing vec4s_cross(), vec4s_cross_ret().");
+	const t_vec4s v1 = lag_vec4sv_ret(1, 2, 3);
+	const t_vec4s v2 = lag_vec4sv_ret(2, 3, 4);
+	const t_vec4s expected = lag_vec4sv_ret(-1, 2, -1);
+	const t_vec4s expected2 = lag_vec4sv_ret(1, -2, 1);
+
+	t_vec4s res = lag_vec4s_cross_ret(v1, v2);
+	t_vec4s res2;
+	lag_vec4s_cross(&res2, v1, v2);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(res);
+	Vec4s vec3(res2);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+	
+	t_vec4s res3 = lag_vec4s_cross_ret(v2, v1);
+	t_vec4s res4;
+	lag_vec4s_cross(&res4, v2, v1);
+
+	Vec4s vec4(expected2);
+	Vec4s vec5(res3);
+	Vec4s vec6(res4);
+
+	assertEqual(vec4, vec5);
+	assertEqual(vec4, vec6);
+
+	// Edge cases
+	const t_vec4s zeroVec = lag_vec4sv_ret(0, 0, 0);
+	const t_vec4s zeroResult = lag_vec4s_cross_ret(zeroVec, zeroVec);
+	const t_vec4s zeroExpected = zeroVec;
+
+	Vec4s vecZeroExpected(zeroExpected);
+	Vec4s vecZeroResult(zeroResult);
+
+	assertEqual(vecZeroExpected, vecZeroResult);
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4s_eq() {
+	PRINT_LINE("Testing vec4s_eq().");
+	const t_vec4s v1 = lag_vec4s_ret(0, 0, 0, 0);
+	const t_vec4s v2 = lag_vec4s_ret(0, 0, 0, 0);
+	Vec4s vectors1[20];
+	Vec4s vectors2[20];
+
+	for (int i = 0; i < 20; i++) {
+		vectors1[i].setVector(
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__)
+		);
+		vectors2[i] = vectors1[i];
+		assertEqual(
+			true,
+			lag_vec4s_eq(
+				vectors1[i].getVector(),
+				vectors2[i].getVector(),
+				EPSILON)
+		);
+	}
+
+	for (int i = 0; i < 20; i++) {
+		vectors1[i].setVector(
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__),
+			((double)std::rand() / __DBL_DIG__)
+		);
+		vectors2[i] = vectors1[i];
+		vectors2[i].invertBits();
+		assertEqual(
+			false,
+			lag_vec4s_eq(
+				vectors1[i].getVector(),
+				vectors2[i].getVector(),
+				EPSILON)
+		);
+	}
+
+	routineCheck();
+	PRINT_LINE("");
+}
+
+void	LagATest::test_vec4s_normalize() {
+	PRINT_LINE("Testing vec4s_normalize(), vec4s_normalize_new().");
+	const t_vec4s v1 = lag_vec4sv_ret(4, 0, 0);
+	const t_vec4s expected = lag_vec4sv_ret(1, 0, 0);
+
+	t_vec4s v2 = v1;
+	t_vec4s v3;
+	lag_vec4s_normalize(&v2);
+	lag_vec4s_normalize_new(&v3, v1);
+
+	Vec4s vec1(expected);
+	Vec4s vec2(v2);
+	Vec4s vec3(v3);
+
+	assertEqual(vec1, vec2);
+	assertEqual(vec1, vec3);
+	
+	const t_vec4s v4 = lag_vec4sv_ret(1, 2, 3);
+	const t_vec4s expected2 = lag_vec4sv_ret(1.0 / sqrtf(14), 2.0 / sqrtf(14), 3.0 / sqrtf(14));
+
+	t_vec4s v5 = v4;
+	t_vec4s v6;
+	lag_vec4s_normalize(&v5);
+	lag_vec4s_normalize_new(&v6, v4);
+
+	Vec4s vec4(expected2);
+	Vec4s vec5(v5);
+	Vec4s vec6(v6);
+
+	assertEqual(vec4, vec5);
+	assertEqual(vec4, vec6);
+	
+	const t_vec4s v7 = lag_vec4sv_ret(0, 0, 0);
+	const t_vec4s expected3 = lag_vec4sv_ret(0, 0, 0);
+	
+	t_vec4s v8 = v7;
+	t_vec4s v9;
+	lag_vec4s_normalize(&v8);
+	lag_vec4s_normalize_new(&v9, v7);
+
+	Vec4s vec7(expected3);
+	Vec4s vec8(v8);
+	Vec4s vec9(v9);
+
+	assertEqual(vec7, vec8);
+	assertEqual(vec7, vec9);
 
 	routineCheck();
 	PRINT_LINE("");
