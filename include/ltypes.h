@@ -6,17 +6,17 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 20:13:25 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/18 00:27:37 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/19 06:44:27 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LTYPES_H
 # define LTYPES_H
 
-# include <immintrin.h> // For AVX intrinsics (__m256d, __m* types in general)
-# include <stdint.h> // For bit-wise magic
+# include <immintrin.h> // For AVX/SSE intrinsics (__m256d, __m128)
+# include <stdint.h> // For bit-wise magic (having the option is nice)
 
-# define EPSILON __DBL_EPSILON__
+# define EPSILON __FLT_EPSILON__
 
 /*--- VECTOR ---*/
 
@@ -33,6 +33,19 @@ typedef union u_vec4d
 		double	w;
 	};
 }__attribute((aligned(32)))	t_vec4d;
+
+typedef union u_vec4s
+{
+	float		a[4];
+	__m128		simd;
+	struct
+	{
+		float	x;
+		float	y;
+		float	z;
+		float	w;
+	};
+}__attribute((aligned(16)))	t_vec4s;
 
 typedef union u_vec3d
 {
