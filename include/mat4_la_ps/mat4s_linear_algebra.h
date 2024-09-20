@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 07:24:39 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/20 07:26:02 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/20 19:33:16 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 # define MAT4S_LINEAR_ALGEBRA
 
 # include "mat4s_init.h"
+# include "mat4s_cross.h"
 
 #endif // !MAT4S_LINEAR_ALGEBRA
