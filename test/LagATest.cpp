@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 05:13:18 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/19 06:19:00 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:25:02y ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -843,4 +843,137 @@ void	LagATest::test_vec4s_normalize() {
 
 	routineCheck();
 	PRINT_LINE("");
+}
+
+void	LagATest::test_mat4s_init() {
+	{
+		PRINT_LINE("Testing `lag_mat4s_identity()`:");
+		t_mat4s m1 = (t_mat4s)
+		{
+			.r1 = (t_vec4s){1, 0, 0, 0},
+			.r2 = (t_vec4s){0, 1, 0, 0},
+			.r3 = (t_vec4s){0, 0, 1, 0},
+			.r4 = (t_vec4s){0, 0, 0, 1},
+		};
+		t_mat4s m2 = lag_mat4s_identity();
+
+		Mat4<t_mat4s, t_vec4s, Vec4s> expected(m1);
+		Mat4<t_mat4s, t_vec4s, Vec4s> actual(m2);
+		if (assertEqual(expected, actual))
+			PRINT_LINE("Test 1 passed!");
+	}
+
+	{
+		PRINT_LINE("Testing `lag_mat4s_translation()`:");
+		t_mat4s expected_mats[200];
+		t_mat4s actual_mats[200];
+
+		for (int i = 0; i < 200; i++) {
+			const float sx = std::rand() / __FLT_MAX__;
+			const float sy = std::rand() / __FLT_MAX__;
+			const float sz = std::rand() / __FLT_MAX__;
+
+			expected_mats[i] = (t_mat4s)
+			{
+				.r1 = (t_vec4s){0, 0, 0, sx},
+				.r2 = (t_vec4s){0, 0, 0, sy},
+				.r3 = (t_vec4s){0, 0, 0, sz},
+				.r4 = (t_vec4s){0, 0, 0, 1}
+			};
+			actual_mats[i] = lag_mat4s_scaling(sx, sy, sz);
+			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[i]);
+			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[i]);
+			if (assertEqual(expected, actual))
+				PRINT_LINE("Pass.");
+		}
+	}
+
+	{
+		PRINT_LINE("Testing `lag_mat4s_rows_ret()`:");
+		t_mat4s expected_mats[200] = {0};
+		t_mat4s actual_mats[200] = {0};
+
+		for (int n = 0; n < 200; n++) {
+			for (int r = 0; r < 4; r++) {
+				for (int c = 0; c < 4; c++ /*hehe~*/) 
+					expected_mats[n].a[r][c] = std::rand() / __FLT_MAX__;
+			}
+			actual_mats[n] = lag_mat4s_rows_ret(
+				expected_mats[n].r1,
+				expected_mats[n].r2,
+				expected_mats[n].r3,
+				expected_mats[n].r4
+			);
+			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
+			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
+			if (assertEqual(expected, actual))
+				PRINT_LINE("Pass.");
+		}
+	}
+
+	{
+		PRINT_LINE("Testing `lag_mat4s_rotation_x()`");
+		t_mat4s expected_mats[360] = {0};
+		t_mat4s actual_mats[360] = {0};
+
+		for (int n = 0; n < 360; n++) {
+			float rad = M_PI * n / 180;
+			expected_mats[n] = (t_mat4s)
+			{
+				.r1 = lag_vec4s_ret(1, 0, 0, 0),
+				.r2 = lag_vec4s_ret(0, cos(rad), -sin(rad), 0),
+				.r3 = lag_vec4s_ret(0, sin(rad), cos(rad), 0),
+				.r4 = lag_vec4s_ret(0, 0, 0, 1),
+			};
+			actual_mats[n] = lag_mat4s_rotation_x(rad);
+			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
+			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
+			if (assertEqual(expected, actual))
+				PRINT_LINE("Pass.");
+		}
+	}
+
+	{
+		PRINT_LINE("Testing `lag_mat4s_rotation_y()`");
+		t_mat4s expected_mats[360] = {0};
+		t_mat4s actual_mats[360] = {0};
+
+		for (int n = 0; n < 360; n++) {
+			float rad = M_PI * n / 180;
+			expected_mats[n] = (t_mat4s)
+			{
+				.r1 = lag_vec4s_ret(cos(rad), 0, sin(rad), 0),
+				.r2 = lag_vec4s_ret(0, 1, 0, 0),
+				.r3 = lag_vec4s_ret(-sin(rad), 0, cos(rad), 0),
+				.r4 = lag_vec4s_ret(0, 0, 0, 1),
+			};
+			actual_mats[n] = lag_mat4s_rotation_y(rad);
+			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
+			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
+			if (assertEqual(expected, actual))
+				PRINT_LINE("Pass.");
+		}
+	}
+
+	{
+		PRINT_LINE("Testing `lag_mat4s_rotation_z()`");
+		t_mat4s expected_mats[360] = {0};
+		t_mat4s actual_mats[360] = {0};
+
+		for (int n = 0; n < 360; n++) {
+			float rad = M_PI * n / 180;
+			expected_mats[n] = (t_mat4s)
+			{
+				.r1 = lag_vec4s_ret(cos(rad), -sin(rad), 0, 0),
+				.r2 = lag_vec4s_ret(sin(rad), cos(rad), 0, 0),
+				.r3 = lag_vec4s_ret(0, 0, 1, 0),
+				.r4 = lag_vec4s_ret(0, 0, 0, 1),
+			};
+			actual_mats[n] = lag_mat4s_rotation_z(rad);
+			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
+			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
+			if (assertEqual(expected, actual))
+				PRINT_LINE("Pass.");
+		}
+	}
 }

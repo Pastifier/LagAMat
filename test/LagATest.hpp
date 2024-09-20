@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 03:29:08 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/19 06:02:29 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:29:58 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,31 +122,40 @@ private:
 	t_vec4d _internal;
 };
 
+template <typename T, typename X, class S>
 class Mat4
 {
 public:
-	Mat4() : _internal(((t_mat4d){0})) {};
-	Mat4(const t_mat4d init) : _internal(init) {};
+	Mat4() : _internal(((T){0})) {};
+	Mat4(const T init) : _internal(init) {};
 	Mat4(const Mat4& other) : _internal(other.getMatrix()) {};
 
-	const t_mat4d getMatrix() const {
+	const T getMatrix() const {
 		return _internal;
 	}
 
 	void print() {
-		PRINT_MATRIX4x4(this);
+		PRINT_LINE("");
+		X*	thisRows = (X *)&_internal.r1;
+		for (int i = 0; i < 4; i++) {
+			S row = S(thisRows[i]);
+			PRINT_LINE(row);
+		}
 	}
 
 	bool operator==(const Mat4& other) const {
-		bool	expr = true;
+		S	vecs[4];
+		S	otherVecs[4];
+		X*	thisRows = (X *)&_internal.r1;
+		const T& tempMatrix = other.getMatrix();
+		X*	otherRows = (X *)&tempMatrix.r1;
 		for (int i = 0; i < 4; i++) {
-			expr &= lag_vec4d_eq(
-				*(t_vec4d *)this->getMatrix().a[i],
-				*(t_vec4d *)other.getMatrix().a[i],
-				EPSILON
-			);
+			vecs[i] = S(thisRows[i]);
+			otherVecs[i] = S(otherRows[i]);
+			if (vecs[i] != otherVecs[i])
+				return false;
 		}
-		return expr;
+		return true;
 	}
 
 	bool operator!=(const Mat4& other) const {
@@ -154,10 +163,10 @@ public:
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& m) {
-		Vec4 r[4];
+		S r[4];
 		os << std::endl;
 		for (int i = 0; i < 4; i++) {
-			r[i] = Vec4(*(t_vec4d *)m.getMatrix().a[i]);
+			r[i] = S(*(X *)m.getMatrix().a[i]);
 			os << r[i] << std::endl;
 		}
 		os << std::endl;
@@ -165,7 +174,7 @@ public:
 	}
 
 private:
-	t_mat4d _internal;
+	T _internal;
 };
 
 
@@ -202,6 +211,8 @@ public:
 	void test_vec4s_cross();
 	void test_vec4s_eq();
 
+	void test_mat4s_init();
+
 	void runVec4dTests() {
 		test_vec4d_init();
 		test_vec4d_add();
@@ -229,18 +240,23 @@ public:
 		test_vec4s_eq();
 	}
 
+	void runMat4sTests() {
+		test_mat4s_init();
+	}
+
 private:
 	int _failedTests;
 	int _passedTests;
 
 	template <typename T>
-	void assertEqual(T expected, T actual) {
+	bool assertEqual(T expected, T actual) {
 		if (expected != actual) {
 			PRINT_ERR("Test failed: Expected " << expected << ", but got " << actual);
 			++_failedTests;
-		} else {
-			++_passedTests;
+			return false;
 		}
+		++_passedTests;
+		return true;
 	}
 
 	void routineCheck() {

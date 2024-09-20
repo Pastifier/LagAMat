@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 20:13:25 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/19 08:31:24 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/20 07:08:10 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,19 @@ typedef union u_mat3d
 		t_vec3d	ignore;
 	};
 }__attribute((aligned(32)))	t_mat3d;
+
+typedef union u_mat4s
+{
+	float	a[4][4];
+	__m128	simd[4];
+	struct
+	{
+		t_vec4s	r1;
+		t_vec4s	r2;
+		t_vec4s	r3;
+		t_vec4s	r4;
+	};
+}__attribute((aligned(16)))	t_mat4s;
 
 typedef union u_mat4d
 {
