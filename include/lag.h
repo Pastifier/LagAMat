@@ -13,10 +13,17 @@
 #ifndef LAG_H
 # define LAG_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include "./vec4_la_ps/vec4s_linear_algebra.h"
 # include "./vec4_la_pd/vec4_linear_algebra.h"
 # include "./mat4_la_ps/mat4s_linear_algebra.h"
 
+# ifdef __cplusplus
+}
+# endif
 /*--- Matrix 4x4 ---*/
 
 // @brief 
