@@ -28,7 +28,7 @@ static inline bool	lag_vec4s_eq(const t_vec4s a, const t_vec4s b,
 						float tolerance)
 {
 	const __m128	sign_mask = _mm_set1_ps(-0.0f);
-	const __m128	abs_diff = _mm_andnot_pd(\
+	const __m128	abs_diff = _mm_andnot_ps(\
 						sign_mask, \
 						_mm_sub_ps(a.simd, b.simd) \
 					);
