@@ -29,7 +29,7 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 CFLAGS += -I$(INC_DIR)
 
-HEADER_DEPENDING := $(addprefix -I, $(INCLUDE))
+#HEADER_DEPENDING := $(addprefix -I, $(INCLUDE))
 
 .PHONY: all clean fclean re objs
 
