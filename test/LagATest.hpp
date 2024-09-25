@@ -212,6 +212,7 @@ public:
 	void test_vec4s_eq();
 
 	void test_mat4s_init();
+	void test_mat4s_cross_mat4s();
 
 	void runVec4dTests() {
 		test_vec4d_init();
@@ -242,6 +243,7 @@ public:
 
 	void runMat4sTests() {
 		test_mat4s_init();
+		test_mat4s_cross_mat4s();
 	}
 
 private:

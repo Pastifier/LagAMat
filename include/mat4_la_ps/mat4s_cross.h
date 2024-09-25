@@ -41,6 +41,7 @@ static inline t_vec4s	lag_mat4s_cross_vec4s(const t_mat4s m,
 		});
 }
 
+#define PRINT_VECTOR(v) printf("%f, %f, %f, %f\n", v.x, v.y, v.z, v.w)
 
 static inline __m128	compute_row(const __m128 *in1, const __m128 *in2,
 							int r)

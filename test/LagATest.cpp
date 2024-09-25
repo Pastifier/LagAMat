@@ -848,13 +848,11 @@ void	LagATest::test_vec4s_normalize() {
 void	LagATest::test_mat4s_init() {
 	{
 		PRINT_LINE("Testing `lag_mat4s_identity()`:");
-		t_mat4s m1 = (t_mat4s)
-		{
-			.r1 = (t_vec4s){1, 0, 0, 0},
-			.r2 = (t_vec4s){0, 1, 0, 0},
-			.r3 = (t_vec4s){0, 0, 1, 0},
-			.r4 = (t_vec4s){0, 0, 0, 1},
-		};
+		t_mat4s m1;
+			m1.r1 = (t_vec4s){1, 0, 0, 0};
+			m1.r2 = (t_vec4s){0, 1, 0, 0};
+			m1.r3 = (t_vec4s){0, 0, 1, 0};
+			m1.r4 = (t_vec4s){0, 0, 0, 1};
 		t_mat4s m2 = lag_mat4s_identity();
 
 		Mat4<t_mat4s, t_vec4s, Vec4s> expected(m1);
@@ -873,13 +871,11 @@ void	LagATest::test_mat4s_init() {
 			const float sy = std::rand() / __FLT_MAX__;
 			const float sz = std::rand() / __FLT_MAX__;
 
-			expected_mats[i] = (t_mat4s)
-			{
-				.r1 = (t_vec4s){0, 0, 0, sx},
-				.r2 = (t_vec4s){0, 0, 0, sy},
-				.r3 = (t_vec4s){0, 0, 0, sz},
-				.r4 = (t_vec4s){0, 0, 0, 1}
-			};
+			
+				expected_mats[i].r1 = (t_vec4s){0, 0, 0, sx};
+				expected_mats[i].r2 = (t_vec4s){0, 0, 0, sy};
+				expected_mats[i].r3 = (t_vec4s){0, 0, 0, sz};
+				expected_mats[i].r4 = (t_vec4s){0, 0, 0, 1};
 			actual_mats[i] = lag_mat4s_scaling(sx, sy, sz);
 			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[i]);
 			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[i]);
@@ -918,13 +914,10 @@ void	LagATest::test_mat4s_init() {
 
 		for (int n = 0; n < 360; n++) {
 			float rad = M_PI * n / 180;
-			expected_mats[n] = (t_mat4s)
-			{
-				.r1 = lag_vec4s_ret(1, 0, 0, 0),
-				.r2 = lag_vec4s_ret(0, cos(rad), -sin(rad), 0),
-				.r3 = lag_vec4s_ret(0, sin(rad), cos(rad), 0),
-				.r4 = lag_vec4s_ret(0, 0, 0, 1),
-			};
+				expected_mats[n].r1 = lag_vec4s_ret(1, 0, 0, 0);
+				expected_mats[n].r2 = lag_vec4s_ret(0, cos(rad), -sin(rad), 0);
+				expected_mats[n].r3 = lag_vec4s_ret(0, sin(rad), cos(rad), 0);
+				expected_mats[n].r4 = lag_vec4s_ret(0, 0, 0, 1);
 			actual_mats[n] = lag_mat4s_rotation_x(rad);
 			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
 			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
@@ -940,13 +933,10 @@ void	LagATest::test_mat4s_init() {
 
 		for (int n = 0; n < 360; n++) {
 			float rad = M_PI * n / 180;
-			expected_mats[n] = (t_mat4s)
-			{
-				.r1 = lag_vec4s_ret(cos(rad), 0, sin(rad), 0),
-				.r2 = lag_vec4s_ret(0, 1, 0, 0),
-				.r3 = lag_vec4s_ret(-sin(rad), 0, cos(rad), 0),
-				.r4 = lag_vec4s_ret(0, 0, 0, 1),
-			};
+				expected_mats[n].r1 = lag_vec4s_ret(cos(rad), 0, sin(rad), 0);
+				expected_mats[n].r2 = lag_vec4s_ret(0, 1, 0, 0);
+				expected_mats[n].r3 = lag_vec4s_ret(-sin(rad), 0, cos(rad), 0);
+				expected_mats[n].r4 = lag_vec4s_ret(0, 0, 0, 1);
 			actual_mats[n] = lag_mat4s_rotation_y(rad);
 			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
 			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
@@ -962,13 +952,10 @@ void	LagATest::test_mat4s_init() {
 
 		for (int n = 0; n < 360; n++) {
 			float rad = M_PI * n / 180;
-			expected_mats[n] = (t_mat4s)
-			{
-				.r1 = lag_vec4s_ret(cos(rad), -sin(rad), 0, 0),
-				.r2 = lag_vec4s_ret(sin(rad), cos(rad), 0, 0),
-				.r3 = lag_vec4s_ret(0, 0, 1, 0),
-				.r4 = lag_vec4s_ret(0, 0, 0, 1),
-			};
+				expected_mats[n].r1 = lag_vec4s_ret(cos(rad), -sin(rad), 0, 0);
+				expected_mats[n].r2 = lag_vec4s_ret(sin(rad), cos(rad), 0, 0);
+				expected_mats[n].r3 = lag_vec4s_ret(0, 0, 1, 0);
+				expected_mats[n].r4 = lag_vec4s_ret(0, 0, 0, 1);
 			actual_mats[n] = lag_mat4s_rotation_z(rad);
 			Mat4<t_mat4s, t_vec4s, Vec4s> expected(expected_mats[n]);
 			Mat4<t_mat4s, t_vec4s, Vec4s> actual(actual_mats[n]);
@@ -976,4 +963,40 @@ void	LagATest::test_mat4s_init() {
 				PRINT_LINE("Pass.");
 		}
 	}
+}
+
+void LagATest::test_mat4s_cross_mat4s() {
+    PRINT_LINE("Testing mat4s_cross_mat4s()");
+
+    // Correctly initialize the matrix 'a'
+    t_mat4s a;
+    a.r1 = lag_vec4s_ret(1, 2, 3, 4);
+    a.r2 = lag_vec4s_ret(5, 6, 7, 8);
+    a.r3 = lag_vec4s_ret(9, 10, 11, 12);
+    a.r4 = lag_vec4s_ret(13, 14, 15, 16);  // Fix: Ensure this is r4
+
+    // Initialize matrix 'b'
+    t_mat4s b;
+    b.r1 = lag_vec4s_ret(1, 0, 0, 1);
+    b.r2 = lag_vec4s_ret(0, 1, 1, 0);
+    b.r3 = lag_vec4s_ret(1, 1, 0, 0);
+    b.r4 = lag_vec4s_ret(0, 0, 0, 1);
+
+    // Result matrix
+    t_mat4s ab;
+    lag_mat4s_cross_mat4s(a, b, &ab);
+
+    // Expected result
+    t_mat4s c;
+    c.r1 = lag_vec4s_ret(30, 35, 25, 17);
+    c.r2 = lag_vec4s_ret(70, 83, 61, 41);
+    c.r3 = lag_vec4s_ret(110, 131, 97, 65);
+    c.r4 = lag_vec4s_ret(150, 179, 133, 93);
+
+    // Compare actual and expected results
+    Mat4<t_mat4s, t_vec4s, Vec4s> actual(ab);
+    Mat4<t_mat4s, t_vec4s, Vec4s> expected(c);
+
+    assertEqual(expected, actual);
+    routineCheck();
 }
