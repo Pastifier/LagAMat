@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:36:15 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/20 19:27:13 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/25 22:15:29y ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,69 +15,104 @@
 
 # include "ltypes.h"
 
+//static inline __m128	_extract_column_ps4(const t_mat4s *in, int c)
+//{
+//	return (_mm_set_ps(in->a[3][c], in->a[2][c], in->a[1][c], in->a[0][c]));
+//}
+
 /// @brief Returns the cross product of a `t_mat4s` with a `t_vec4s`
 ///        (in that order).
 static inline t_vec4s	lag_mat4s_cross_vec4s(const t_mat4s m,
 							const t_vec4s v)
 {
-	__m128			col[4];
-	__m128			mul[4];
-	__m128			add[2];
-	const __m128	*rows_m = (const __m128 *)&m.r1.simd;
+	t_vec4s			ret;
+	const __m128	mul0 = _mm_mul_ps(m.simd[0], v.simd);
+	const __m128	mul1 = _mm_mul_ps(m.simd[1], v.simd);
+	const __m128	mul2 = _mm_mul_ps(m.simd[2], v.simd);
+	const __m128	mul3 = _mm_mul_ps(m.simd[3], v.simd);
 
-	col[0] = _mm_shuffle_ps(v.simd, v.simd, _MM_SHUFFLE(0, 0, 0, 0));
-	col[1] = _mm_shuffle_ps(v.simd, v.simd, _MM_SHUFFLE(1, 1, 1, 1));
-	col[2] = _mm_shuffle_ps(v.simd, v.simd, _MM_SHUFFLE(2, 2, 2, 2));
-	col[3] = _mm_shuffle_ps(v.simd, v.simd, _MM_SHUFFLE(3, 3, 3, 3));
-	mul[0] = _mm_mul_ps(rows_m[0], col[0]);
-	mul[1] = _mm_mul_ps(rows_m[1], col[1]);
-	mul[2] = _mm_mul_ps(rows_m[2], col[2]);
-	mul[3] = _mm_mul_ps(rows_m[3], col[3]);
-	add[0] = _mm_add_ps(mul[0], mul[1]);
-	add[1] = _mm_add_ps(mul[2], mul[3]);
-	return ((t_vec4s)
-		{
-			.simd = _mm_add_ps(add[0], add[1])
-		});
+
+	ret.simd = _mm_hadd_ps(_mm_hadd_ps(mul0, mul1), _mm_hadd_ps(mul2, mul3));
+	return (ret);
 }
 
-#define PRINT_VECTOR(v) printf("%f, %f, %f, %f\n", v.x, v.y, v.z, v.w)
+//static inline void	lag_mat4s_cross_mat4s(const t_mat4s in1,
+//							const t_mat4s in2, t_mat4s *out)
+//{
+//	t_mat4s	cols;
 
-static inline __m128	compute_row(const __m128 *in1, const __m128 *in2,
-							int r)
+//	cols.simd[0] = _extract_column_ps4(&in2, 0);
+//	cols.simd[1] = _extract_column_ps4(&in2, 1);
+//	cols.simd[2] = _extract_column_ps4(&in2, 2);
+//	cols.simd[3] = _extract_column_ps4(&in2, 3);
+//	out->r1 = lag_mat4s_cross_vec4s(cols, in1.r1);
+//	out->r2 = lag_mat4s_cross_vec4s(cols, in1.r2);
+//	out->r3 = lag_mat4s_cross_vec4s(cols, in1.r3);
+//	out->r4 = lag_mat4s_cross_vec4s(cols, in1.r4);
+//}
+
+static inline void	lag_mat4s_cross_stage1(const t_mat4s in1,
+						const t_mat4s in2, __m256 *c)
 {
-	__m128	col[4];
-	__m128	mul[4];
-	__m128	add[2];
+	__m256	a[2];
+	__m256	b[1];
+	__m256	t[2];
+	__m256	u[2];
 
-	col[0] = _mm_shuffle_ps(in2[r], in2[r], _MM_SHUFFLE(0, 0, 0, 0));
-	col[1] = _mm_shuffle_ps(in2[r], in2[r], _MM_SHUFFLE(1, 1, 1, 1));
-	col[2] = _mm_shuffle_ps(in2[r], in2[r], _MM_SHUFFLE(2, 2, 2, 2));
-	col[3] = _mm_shuffle_ps(in2[r], in2[r], _MM_SHUFFLE(3, 3, 3, 3));
-	mul[0] = _mm_mul_ps(in1[0], col[0]);
-	mul[1] = _mm_mul_ps(in1[1], col[1]);
-	mul[2] = _mm_mul_ps(in1[2], col[2]);
-	mul[3] = _mm_mul_ps(in1[3], col[3]);
-	add[0] = _mm_add_ps(mul[0], mul[1]);
-	add[1] = _mm_add_ps(mul[2], mul[3]);
-	return (_mm_add_ps(add[0], add[1]));
+	t[0] = in1._ymm[0];
+	t[1] = in1._ymm[1];
+	u[0] = in2._ymm[0];
+	a[0] = _mm256_shuffle_ps(t[0], t[0], _MM_SHUFFLE(0, 0, 0, 0));
+	a[1] = _mm256_shuffle_ps(t[1], t[1], _MM_SHUFFLE(0, 0, 0, 0));
+	b[0] = _mm256_permute2f128_ps(u[0], u[0], 0x00);
+	c[0] = _mm256_mul_ps(a[0], b[0]);
+	c[1] = _mm256_mul_ps(a[1], b[0]);
+	a[0] = _mm256_shuffle_ps(t[0], t[0], _MM_SHUFFLE(1, 1, 1, 1));
+	a[1] = _mm256_shuffle_ps(t[1], t[1], _MM_SHUFFLE(1, 1, 1, 1));
+	b[0] = _mm256_permute2f128_ps(u[0], u[0], 0x11);
+	c[2] = _mm256_mul_ps(a[0], b[0]);
+	c[3] = _mm256_mul_ps(a[1], b[0]);
+}
+
+static inline void	lag_mat4s_cross_stage2(const t_mat4s in1,
+						const t_mat4s in2, __m256 *c)
+{
+	__m256	a[2];
+	__m256	b[1];
+	__m256	t[2];
+	__m256	u[2];
+
+	t[0] = in1._ymm[0];
+	t[1] = in1._ymm[1];
+	u[1] = in2._ymm[1];
+	a[0] = _mm256_shuffle_ps(t[0], t[0], _MM_SHUFFLE(2, 2, 2, 2));
+	a[1] = _mm256_shuffle_ps(t[1], t[1], _MM_SHUFFLE(2, 2, 2, 2));
+	b[0] = _mm256_permute2f128_ps(u[1], u[1], 0x00);
+	c[4] = _mm256_mul_ps(a[0], b[0]);
+	c[5] = _mm256_mul_ps(a[1], b[0]);
+	a[0] = _mm256_shuffle_ps(t[0], t[0], _MM_SHUFFLE(3, 3, 3, 3));
+	a[1] = _mm256_shuffle_ps(t[1], t[1], _MM_SHUFFLE(3, 3, 3, 3));
+	b[0] = _mm256_permute2f128_ps(u[1], u[1], 0x11);
+	c[6] = _mm256_mul_ps(a[0], b[0]);
+	c[7] = _mm256_mul_ps(a[1], b[0]);
+	c[0] = _mm256_add_ps(c[0], c[2]);
+	c[4] = _mm256_add_ps(c[4], c[6]);
+	c[1] = _mm256_add_ps(c[1], c[3]);
+	c[5] = _mm256_add_ps(c[5], c[7]);
 }
 
 /// @brief computes the cross product of `in1` with `in2`
 ///        (in that order), and stores the result in the `t_mat4s`
 ///        pointed-to by `out`.
 static inline void	lag_mat4s_cross_mat4s(const t_mat4s in1,
-							const t_mat4s in2, t_mat4s *out)
+						const t_mat4s in2, t_mat4s *out)
 {
-	const __m128	*in1_rows = &(in1.r1.simd);
-	const __m128	*in2_rows = &(in2.r1.simd);
-	__m128			*out_rows;
+	__m256	c[8];
 
-	out_rows = &(out->r1.simd);
-	out_rows[0] = compute_row(in1_rows, in2_rows, 0);
-	out_rows[1] = compute_row(in1_rows, in2_rows, 1);
-	out_rows[2] = compute_row(in1_rows, in2_rows, 2);
-	out_rows[3] = compute_row(in1_rows, in2_rows, 3);
+	lag_mat4s_cross_stage1(in1, in2, c);
+	lag_mat4s_cross_stage2(in1, in2, c);
+	out->_ymm[0] = _mm256_add_ps(c[0], c[4]);
+	out->_ymm[1] = _mm256_add_ps(c[1], c[5]);
 }
 
 #endif // !MAT4S_CROSS_H
