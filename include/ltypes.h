@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 20:13:25 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/20 07:08:10 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/09/29 01:34:34 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <immintrin.h> // For AVX/SSE intrinsics (__m256d, __m128)
 # include <stdint.h> // For bit-wise magic (having the option is nice)
 
-# define EPSILON __FLT_EPSILON__
+# define EPSILON 0.0001
 
 /*--- VECTOR ---*/
 
@@ -75,6 +75,7 @@ typedef union u_vec2d
 
 typedef t_vec4d	t_vec4d; // To silence faulty(?) VS Code warning:
 
+// 2D Matrices can be held inside a single 128-bit vector, fix. (for all)
 typedef union u_mat2d
 {
 	double	a[2][2];
@@ -103,6 +104,7 @@ typedef union u_mat4s
 {
 	float	a[4][4];
 	__m128	simd[4];
+	__m256	_ymm[2];
 	struct
 	{
 		t_vec4s	r1;
