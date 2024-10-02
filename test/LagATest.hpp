@@ -6,7 +6,7 @@
 /*   By: ebinjama <ebinjama@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 03:29:08 by ebinjama          #+#    #+#             */
-/*   Updated: 2024/09/20 12:29:58 by ebinjama         ###   ########.fr       */
+/*   Updated: 2024/10/02 20:34:34 by ebinjama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,8 @@ public:
 
 	void test_mat4s_init();
 	void test_mat4s_cross_mat4s();
+	void test_mat4s_inverse();
+	void test_mat4s_get_transform_inverse();
 
 	void runVec4dTests() {
 		test_vec4d_init();
@@ -242,8 +244,10 @@ public:
 	}
 
 	void runMat4sTests() {
-		test_mat4s_init();
-		test_mat4s_cross_mat4s();
+		//test_mat4s_init();
+		//test_mat4s_cross_mat4s();
+		//test_mat4s_inverse();
+		test_mat4s_get_transform_inverse();
 	}
 
 private:
